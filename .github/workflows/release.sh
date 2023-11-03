@@ -45,8 +45,11 @@ main() {
     esac
     [ -n "${version}" ] || err "Not building a release"
 
-    git show --pretty= --name-only "${GITHUB_REF}" \
-        | xargs tar czf rules_shtk-"${version}".tar.gz
+    local distname="rules_shtk-${version}"
+    mkdir "${distname}"
+    git ls-tree --name-only -r "${GITHUB_REF}" \
+        | xargs tar -cf - | tar -C "${distname}" -xf -
+    tar czf "${distname}.tar.gz" "${distname}"
 }
 
 main
