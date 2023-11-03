@@ -1,0 +1,27 @@
+name: Release
+
+on:
+    push:
+        tags:
+            - rules_shtk-*
+
+jobs:
+    create-release:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+        steps:
+            - uses: actions/checkout@v4
+            - run: ./.github/workflows/release.sh
+            - run: ./.github/workflows/notes.sh >notes.md
+            - name: Create release draft
+              id: create_release
+              uses: ncipollo/release-action@v1
+              with:
+                  name: Release ${{ github.ref }}
+                  bodyFile: ./notes.md
+                  draft: true
+                  prerelease: false
+                  replacesArtifacts: false
+                  artifacts: rules_shtk-*.tar.gz
+                  artifactContentType: application/gzip
