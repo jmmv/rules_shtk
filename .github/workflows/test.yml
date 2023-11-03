@@ -1,0 +1,27 @@
+name: Test
+
+on: [push, pull_request]
+
+jobs:
+    rules:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/cache@v3
+              with:
+                  path: ~/.cache/bazelisk
+                  key: ${{ runner.os }}--${{ hashFiles('**/.bazelversion') }}
+            - uses: bazelbuild/setup-bazelisk@v2
+            - run: bazel build //:all
+
+    examples:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/cache@v3
+              with:
+                  path: ~/.cache/bazelisk
+                  key: ${{ runner.os }}--${{ hashFiles('**/.bazelversion') }}
+            - uses: bazelbuild/setup-bazelisk@v2
+            - run: ./.github/workflows/install.sh
+            - run: make -C examples
