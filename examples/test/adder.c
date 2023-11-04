@@ -35,7 +35,6 @@
 // unittest module can be used to validate any program.
 //
 
-
 #include <err.h>
 #include <errno.h>
 #include <inttypes.h>

@@ -87,3 +87,14 @@ bad_second_operand_test() {
         -e inline:"adder: Invalid second operand: out of range\n" \
         ../adder 0 -123456789
 }
+
+
+shtk_unittest_add_test bad_arguments
+bad_arguments_test() {
+    expect_command \
+        -s 1 -e inline:"adder: Requires two integer arguments\n" ../adder
+    expect_command \
+        -s 1 -e inline:"adder: Requires two integer arguments\n" ../adder 1
+    expect_command \
+        -s 1 -e inline:"adder: Requires two integer arguments\n" ../adder 1 2 3
+}
