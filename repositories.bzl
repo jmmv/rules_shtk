@@ -38,9 +38,10 @@ SHTK_SHA256 = "9386b7dbf1a28361eaf56dd1712385abdbdf3a02f03e17ccbf5579bf22695e27"
 def _shtk_autoconf_toolchain_impl(repository_ctx):
     shtk_path = repository_ctx.attr.shtk_path
     if not shtk_path:
-        shtk_path = str(repository_ctx.which("shtk"))
-    if not shtk_path:
-        fail("shtk cannot be found in the PATH")
+        path = repository_ctx.which("shtk")
+        if not path:
+            fail("shtk cannot be found in the PATH")
+        shtk_path = str(path)
 
     result = repository_ctx.execute([shtk_path, "version"])
     if result.return_code != 0:
