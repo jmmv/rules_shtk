@@ -108,3 +108,35 @@ system_toolchain_test() {
     ! grep -q SHTK_MODULESDIR.*.cache/bazel "${bin}" \
         || fail "SHTK_MODULESDIR does not point to a local installation"
 }
+
+
+shtk_unittest_add_test system_toolchain_not_present
+system_toolchain_not_present_test() {
+    # Compute a new PATH that does not contain shtk.
+    local newpath=
+    local oldifs="${IFS}"
+    IFS=:
+    for dir in ${PATH}; do
+        if [ ! -e "${dir}/shtk" ]; then
+            if [ -z "${newpath}" ]; then
+                newpath="${dir}"
+            else
+                newpath="${newpath}:${dir}"
+            fi
+        fi
+    done
+    IFS="${oldifs}"
+
+    # We shouldn't be writing into the workspace, but this is much easier to do...
+    # and given that this is only for the testing that happens in GitHub Actions,
+    # it just doesn't matter.
+    rm -rf "${WORKSPACE}/system_toolchain_not_present"
+    cp -rf "${WORKSPACE}/system_toolchain" "${WORKSPACE}/system_toolchain_not_present"
+
+    local bin="${WORKSPACE}/system_toolchain/bazel-bin/simple"
+    PATH="${newpath}" assert_command \
+        -s 1 \
+        -o ignore \
+        -e match:"shtk cannot be found in the PATH" \
+        ../run_bazel system_toolchain_not_present build //:simple
+}
