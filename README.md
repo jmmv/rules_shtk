@@ -17,6 +17,15 @@ To get started, add the following entry to your `MODULE.bazel`:
 
 ```python
 bazel_dep(name = "rules_shtk", version = "1.7.0")
+# This override is necessary until `rules_shtk` is added to the Bazel Central Registry.
+archive_override(
+    module_name = "rules_shtk",
+    integrity = "sha256-+keJHyfY1ZYJcys03IgCAzG4G5dny9cglP7Bvor0rfw=",
+    urls = [
+        "https://github.com/jmmv/rules_shtk/releases/download/rules_shtk-1.7.0/rules_shtk-1.7.0.tar.gz",
+    ],
+    strip_prefix = "rules_shtk-1.7.0",
+)
 ```
 
 Then, update your `WORKSPACE.bazel` file to load an shtk toolchain.  You can
