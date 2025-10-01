@@ -2,7 +2,7 @@
 
 ## Changes in version 1.7.1
 
-**STILL UNDER DEVELOPMENT; NOT RELEASED YET.**
+**Released on 2025-10-01.**
 
 *   PR #5: Fixed error handling in `shtk_system` when shtk is not in the
     `PATH` to provide a clearer error message.

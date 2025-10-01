@@ -16,7 +16,7 @@ For more information about shtk, visit <https://shtk.jmmv.dev/>.
 To get started, add the following entry to your `MODULE.bazel`:
 
 ```python
-bazel_dep(name = "rules_shtk", version = "1.7.0")
+bazel_dep(name = "rules_shtk", version = "1.7.1")
 ```
 
 Then, load an shtk toolchain from `MODULE.bazel` as well.  You can choose
@@ -28,7 +28,7 @@ between:
 
     ```python
     # Use the shtk release that matches these rules (if these rules are version
-    # 1.7.0, then this uses shtk 1.7).
+    # 1.7.x, then this uses shtk 1.7).
     fetch_shtk_dist = use_extension("@rules_shtk//:extensions.bzl", "fetch_shtk_dist")
     use_repo(fetch_shtk_dist, "shtk_dist_1_7")
     register_toolchains("@shtk_dist_1_7//:toolchain")
