@@ -28,7 +28,7 @@
 
 module(
     name = "rules_shtk",
-    version = "1.7.0",
+    version = "1.7.1",
 )
 
 bazel_dep(name = "bazel_skylib", version = "1.4.2")

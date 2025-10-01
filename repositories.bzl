@@ -146,7 +146,7 @@ def shtk_dist(register = True):
     """Registers a released shtk toolchain.
 
     This will cause Bazel to download the shtk version that corresponds to these
-    rules (rules_shtk 1.7.0 pull shtk 1.7), build this toolchain, and make it
+    rules (rules_shtk 1.7.x pull shtk 1.7), build this toolchain, and make it
     available for use.
 
     The toolchain is built under Bazel's external hierarchy and is ephemeral.
