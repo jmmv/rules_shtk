@@ -1,3 +1,4 @@
+MODULE.bazel.lock
 inttest
 system_toolchain_not_present
 tmp

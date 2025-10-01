@@ -81,6 +81,12 @@ do_binary_test() {
 }
 
 
+shtk_unittest_add_test bzlmod_binary
+bzlmod_binary_test() {
+    do_binary_test bzlmod
+}
+
+
 shtk_unittest_add_test workspace_binary
 workspace_binary_test() {
     do_binary_test workspace
@@ -106,6 +112,12 @@ do_test_test() {
 }
 
 
+shtk_unittest_add_test bzlmod_test
+bzlmod_test_test() {
+    do_test_test bzlmod
+}
+
+
 shtk_unittest_add_test workspace_test
 workspace_test_test() {
     do_test_test workspace
@@ -122,6 +134,12 @@ do_system_toolchain_test() {
         || fail "SHTK_MODULESDIR does not point to a local installation"
     ! grep -q SHTK_MODULESDIR.*.cache/bazel "${bin}" \
         || fail "SHTK_MODULESDIR does not point to a local installation"
+}
+
+
+shtk_unittest_add_test bzlmod_system_toolchain
+bzlmod_system_toolchain_test() {
+    do_system_toolchain_test bzlmod
 }
 
 
@@ -160,6 +178,12 @@ do_system_toolchain_not_present_test() {
         -o ignore \
         -e match:"shtk cannot be found in the PATH" \
         ../run_bazel "${style}/system_toolchain_not_present" build //:simple
+}
+
+
+shtk_unittest_add_test bzlmod_system_toolchain_not_present
+bzlmod_system_toolchain_not_present_test() {
+    do_system_toolchain_not_present_test bzlmod
 }
 
 
