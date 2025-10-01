@@ -73,35 +73,50 @@ one_time_teardown() {
 }
 
 
-shtk_unittest_add_test binary
-binary_test() {
-    assert_command -o ignore -e ignore ../run_bazel binary build //:simple
-    assert_command -e match:"Hello, world" "${WORKSPACE}/binary/bazel-bin/simple"
+do_binary_test() {
+    local style="${1}"; shift
+
+    assert_command -o ignore -e ignore ../run_bazel "${style}/binary" build //:simple
+    assert_command -e match:"Hello, world" "${WORKSPACE}/${style}/binary/bazel-bin/simple"
 }
 
 
-shtk_unittest_add_test test
-test_test() {
+shtk_unittest_add_test workspace_binary
+workspace_binary_test() {
+    do_binary_test workspace
+}
+
+
+do_test_test() {
+    local style="${1}"; shift
+
     # Sanity-check that the binary tool we want to test works.
-    assert_command -o ignore -e ignore ../run_bazel test build //:adder
+    assert_command -o ignore -e ignore ../run_bazel "${style}/test" build //:adder
     assert_command \
         -o inline:"The sum of 2 and 3 is 5\n" \
-        "${WORKSPACE}/test/bazel-bin/adder" 2 3
+        "${WORKSPACE}/${style}/test/bazel-bin/adder" 2 3
 
     assert_command \
         -o match:"addition_works... PASSED" \
         -o match:"bad_first_operand... PASSED" \
         -o match:"bad_second_operand... PASSED" \
         -e ignore \
-        ../run_bazel test test --nocache_test_results --test_output=streamed \
+        ../run_bazel "${style}/test" test --nocache_test_results --test_output=streamed \
         //:adder_test
 }
 
 
-shtk_unittest_add_test system_toolchain
-system_toolchain_test() {
-    local bin="${WORKSPACE}/system_toolchain/bazel-bin/simple"
-    assert_command -o ignore -e ignore ../run_bazel system_toolchain build //:simple
+shtk_unittest_add_test workspace_test
+workspace_test_test() {
+    do_test_test workspace
+}
+
+
+do_system_toolchain_test() {
+    local style="${1}"; shift
+
+    local bin="${WORKSPACE}/${style}/system_toolchain/bazel-bin/simple"
+    assert_command -o ignore -e ignore ../run_bazel "${style}/system_toolchain" build //:simple
     assert_command -e match:"Hello, world" "${bin}"
     grep -q SHTK_MODULESDIR.*local "${bin}" \
         || fail "SHTK_MODULESDIR does not point to a local installation"
@@ -110,8 +125,15 @@ system_toolchain_test() {
 }
 
 
-shtk_unittest_add_test system_toolchain_not_present
-system_toolchain_not_present_test() {
+shtk_unittest_add_test workspace_system_toolchain
+workspace_system_toolchain_test() {
+    do_system_toolchain_test workspace
+}
+
+
+do_system_toolchain_not_present_test() {
+    local style="${1}"; shift
+
     # Compute a new PATH that does not contain shtk.
     local newpath=
     local oldifs="${IFS}"
@@ -130,13 +152,18 @@ system_toolchain_not_present_test() {
     # We shouldn't be writing into the workspace, but this is much easier to do...
     # and given that this is only for the testing that happens in GitHub Actions,
     # it just doesn't matter.
-    rm -rf "${WORKSPACE}/system_toolchain_not_present"
-    cp -rf "${WORKSPACE}/system_toolchain" "${WORKSPACE}/system_toolchain_not_present"
+    rm -rf "${WORKSPACE}/${style}/system_toolchain_not_present"
+    cp -rf "${WORKSPACE}/${style}/system_toolchain" "${WORKSPACE}/${style}/system_toolchain_not_present"
 
-    local bin="${WORKSPACE}/system_toolchain/bazel-bin/simple"
     PATH="${newpath}" assert_command \
         -s 1 \
         -o ignore \
         -e match:"shtk cannot be found in the PATH" \
-        ../run_bazel system_toolchain_not_present build //:simple
+        ../run_bazel "${style}/system_toolchain_not_present" build //:simple
+}
+
+
+shtk_unittest_add_test workspace_system_toolchain_not_present
+workspace_system_toolchain_not_present_test() {
+    do_system_toolchain_not_present_test workspace
 }

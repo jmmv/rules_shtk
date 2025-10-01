@@ -41,7 +41,7 @@ load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
 
 bazel_skylib_workspace()
 
-local_repository(name = "rules_shtk", path = "../..")
+local_repository(name = "rules_shtk", path = "../../..")
 
 load("@rules_shtk//:repositories.bzl", "shtk_system")
 
