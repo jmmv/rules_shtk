@@ -1,0 +1,2 @@
+common --enable_bzlmod
+common --noenable_workspace

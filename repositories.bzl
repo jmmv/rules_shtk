@@ -80,7 +80,7 @@ _shtk_autoconf_toolchain = repository_rule(
     configure = True,
 )
 
-def shtk_system(min_version = SHTK_VERSION):
+def shtk_system(shtk_path = None, min_version = SHTK_VERSION, register = True):
     """Discovers and registers the system-installed shtk toolchain.
 
     This causes Bazel to look for shtk(1) in the path and makes it available
@@ -93,9 +93,15 @@ def shtk_system(min_version = SHTK_VERSION):
     Args:
         min_version: The minimum version of shtk that we expect.  If the
             detected version is too old, this rule fails.
+        register: Whether to auto-register the declared toolchain.
     """
-    _shtk_autoconf_toolchain(name = "shtk_autoconf", min_version = min_version)
-    native.register_toolchains("@shtk_autoconf//:toolchain")
+    _shtk_autoconf_toolchain(
+        name = "shtk_autoconf",
+        shtk_path = shtk_path,
+        min_version = min_version,
+    )
+    if register:
+        native.register_toolchains("@shtk_autoconf//:toolchain")
 
 def _shtk_dist_toolchain_impl(repository_ctx):
     version = repository_ctx.attr.version
@@ -136,7 +142,7 @@ _shtk_dist_toolchain = repository_rule(
     },
 )
 
-def shtk_dist():
+def shtk_dist(register = True):
     """Registers a released shtk toolchain.
 
     This will cause Bazel to download the shtk version that corresponds to these
@@ -146,7 +152,11 @@ def shtk_dist():
     The toolchain is built under Bazel's external hierarchy and is ephemeral.
     Therefore, you should not copy scripts built with this toolchain out of the
     bazel-bin directory because they will not work correctly.
+
+    Args:
+        register: Whether to auto-register the declared toolchain.
     """
     repository = "shtk_dist_" + versions.canonicalize(SHTK_VERSION)
     _shtk_dist_toolchain(name = repository, version = SHTK_VERSION, sha256 = SHTK_SHA256)
-    native.register_toolchains("@{}//:toolchain".format(repository))
+    if register:
+        native.register_toolchains("@{}//:toolchain".format(repository))
