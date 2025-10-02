@@ -14,8 +14,4 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
-            - uses: actions/cache@v3
-              with:
-                  path: ~/.cache/bazelisk
-                  key: ${{ runner.os }}--${{ hashFiles('**/.bazelversion') }}
             - run: ./.github/workflows/buildifier.sh
